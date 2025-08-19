@@ -3,6 +3,7 @@ let ctn = document.querySelector('.products');
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 loadProducts();
+updateCart();
 
 function loadProducts() {
   fetch(url)
@@ -61,4 +62,45 @@ function addToCart(e) {
   if (!found) cart.push(item);
   // guardar en localStorage
   localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+
+function createCartRow(product) {
+  let { title, price, qty } = product;
+  let p = document.createElement('p');
+  p.textContent = `${title} $ ${price} Cant: ${qty}`;
+  return p;
+}
+
+function updateCart() {
+  let cartDrawer = document.querySelector('.cart');
+  cartDrawer.innerHTML = '';
+  let suma = 0;
+  if (cart.length == 0) {
+    let h3 = document.createElement('h3');
+    h3.textContent = 'Tu carrito está vacío'
+    cartDrawer.append(h3);
+  } else {
+    for (let product of cart) {
+      suma += product.price * product.qty;
+      let row = createCartRow(product);
+      cartDrawer.append(row);
+    }
+  }
+  let hr = document.createElement('hr');
+  cartDrawer.append(hr);
+  // mostrar total
+  let h2 = document.createElement('h2');
+  h2.textContent = `TOTAL: $ ${suma}`;
+  cartDrawer.append(h2);
+
+  let btn = document.createElement('button');
+  btn.onclick = toggleCart;
+  btn.textContent = 'Cerrar';
+  cartDrawer.append(btn);
+}
+
+function toggleCart() {
+  let cartDrawer = document.querySelector('.cart');
+  cartDrawer.classList.toggle('closed');
 }

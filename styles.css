@@ -58,3 +58,31 @@ header {
 header > * {
   padding: 10px;
 }
+
+.cart {
+  border: 1px solid black;
+  background-color: white;
+  width: 600px;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s;
+  padding: 10px;
+}
+
+.cart hr {
+  width: 90%;
+}
+
+.cart button {
+  width: 33%;
+}
+
+.cart.closed {
+  right: -620px;
+}
