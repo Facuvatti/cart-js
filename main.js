@@ -1,7 +1,7 @@
 let url = 'https://fakestoreapi.com/products';
 let ctn = document.querySelector('.products');
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
+console.log(cart)
 loadProducts();
 updateCart();
 
@@ -29,22 +29,29 @@ function createProduct(product) {
   let   p = document.createElement('p');
   let img = document.createElement('img');
   let btn = document.createElement('button');
-  let icn = document.createElement('i');
+  let btnDel = document.createElement('button');
+  let container = document.createElement("div");
+  let qty = document.createElement('p');
   div.classList.add('product-card');
   h3.textContent = title;
   p.textContent  = '$ ' + price;
   img.src        = image;
-  icn.classList.add('fa-solid');
-  icn.classList.add('fa-cart-plus');
+  btn.textContent = "+"
   btn.onclick = addToCart;
-  btn.append(icn);
-  div.append(h3,img,p,btn);
+  btnDel.onclick = deleteOfCart;
+  btnDel.textContent = "-";
+  container.style.display = "flex";
+  container.style.flexDirection = "row";
+  container.append(btn,btnDel,qty)
+  div.append(h3,img,p,container);
   ctn.append(div);
 }
 
 function addToCart(e) {
   let btn = e.currentTarget;         // el button
-  let btnFather = btn.parentElement; // el div
+  let btnContainer = btn.parentElement; // el div
+  let qty = btnContainer.children[2];
+  let btnFather = btnContainer.parentElement;
   let title = btnFather.children[0].textContent; // el h3
   let price = btnFather.children[2].textContent; // el p
   price = price.split(' ')[1]; // split divide strings
@@ -55,6 +62,7 @@ function addToCart(e) {
   for (let product of cart) {
     if (product.title == item.title) {
       product.qty += 1;
+      qty.textContent = product.qty;
       found = true;
     } 
   }
@@ -64,7 +72,31 @@ function addToCart(e) {
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCart();
 }
+function deleteOfCart(e) {
+  let btn = e.currentTarget;         // el button
+  let btnContainer = btn.parentElement;
+  let qty = btnContainer.children[2];
+  let btnFather = btnContainer.parentElement;
+  let title = btnFather.children[0].textContent; // el h3
 
+  // buscar si ya esta en el carrito y sumarle uno si esta
+  i = 0;
+  for (let product of cart) {
+    
+    if (product.title == title) {
+       if (product.qty> 0){
+      product.qty -= 1;
+      qty.textContent = product.qty;
+      }
+      if (product.qty == 0) cart.splice(i,1);
+    }
+    i = i + 1;
+  }
+  
+  // guardar en localStorage
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();  
+}
 function createCartRow(product) {
   let { title, price, qty } = product;
   let p = document.createElement('p');
